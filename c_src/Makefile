@@ -27,14 +27,14 @@ ERL_INTERFACE_LIB_DIR = $(shell pkg-config --libs erl_ei)
 
 CFLAGS += $(ERL_INTERFACE_INCLUDE_DIR)
 CXXFLAGS += $(ERL_INTERFACE_INCLUDE_DIR)
-LDLIBS += $(ERL_INTERFACE_LIB_DIR)
+LDLIBS += -Wl,-Bstatic $(ERL_INTERFACE_LIB_DIR) -Wl,-Bdynamic
 else
 ERL_INTERFACE_INCLUDE_DIR = $(shell erl -noshell -s init stop -eval "io:format(\"~ts\", [code:lib_dir(erl_interface, include)]).")
 ERL_INTERFACE_LIB_DIR = $(shell erl -noshell -s init stop -eval "io:format(\"~ts\", [code:lib_dir(erl_interface, lib)]).")
 
 CFLAGS += -I $(ERL_INTERFACE_INCLUDE_DIR)
 CXXFLAGS += -I $(ERL_INTERFACE_INCLUDE_DIR)
-LDLIBS += -L $(ERL_INTERFACE_LIB_DIR) -lei
+LDLIBS += -Wl,-Bstatic -L $(ERL_INTERFACE_LIB_DIR) -lei -Wl,-Bdynamic
 endif
 
 ifeq ($(PKG_CONFIG_ERL_ERTS), 0)
@@ -75,7 +75,6 @@ endif
 
 #LDLIBS += $(ERL_INTERFACE_LIB_DIR)
 #LDFLAGS += -shared
-
 # Verbosity.
 
 c_verbose_0 = @echo " C     " $(?F);
